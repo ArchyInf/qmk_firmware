@@ -422,9 +422,14 @@ void leader_end_user(void) {
     if(leader_sequence_one_key(DE_5)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F5))));
     }
+
     // task manager
     if(leader_sequence_one_key(KC_ESC)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_ESC))));
+    }
+    // alt+f4
+    if(leader_sequence_one_key(KC_TAB)) {
+      SEND_STRING(SS_LALT(SS_TAP(X_F4)));
     }
 }
 
