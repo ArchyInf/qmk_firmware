@@ -35,8 +35,7 @@ enum preonic_keycodes {
   LOWER,
   RAISE,
   MINE_S,
-  GAME_S,
-  PTRDR, // pointer deref
+  GAME_S
 };
 
 #define CT_COMM LCTL(KC_COMM)
@@ -163,7 +162,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______,  _______, _______, _______, _______, _______, _______, _______, KC_PGUP,  _______, _______, _______,
   _______,  DE_LBRC, DE_LCBR, DE_RCBR, DE_RBRC, _______, _______, KC_BSPC, KC_UP,   KC_DEL,  _______, _______,
   _______,      CPY, DE_LPRN, DE_RPRN, DE_SCLN, AL_HOME, CA_LEFT, KC_LEFT, KC_DOWN, KC_RGHT,CA_RIGHT, _______,
-  _______,      PST,     CUT,    UNDO, CR_NEXT,  CR_ALL, KC_PGUP, KC_HOME, KC_PGDN, KC_END,  KC_LCTL, _______,
+  _______,      PST,     CUT,    UNDO, CR_NEXT,  CR_ALL, _______, KC_HOME, KC_PGDN, KC_END,  KC_LCTL, _______,
   _______,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
@@ -223,8 +222,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_ADJUST] = LAYOUT_preonic_grid(
-  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-  _______, QK_BOOT, DB_TOGG, AG_NORM, AG_SWAP, _______, _______, _______, _______, _______, _______, KC_DEL,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, QK_BOOT, DB_TOGG, AG_NORM, AG_SWAP, _______, _______, _______, _______, _______, _______, _______,
   _______, _______, _______, _______, _______, _______, _______,    MINE,    GAME,   MINEQ, _______, _______,
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -252,11 +251,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_SPC);
           }
           return false;
-          break;
-        case PTRDR:
-          if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_SLASH)SS_LSFT(SS_TAP(X_NUBS)));
-          }
           break;
         case MINE:
           if (record->event.pressed) {
