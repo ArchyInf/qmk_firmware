@@ -1,2 +1,3 @@
 CONVERT_TO = helios
 ENCODER_MAP_ENABLE = yes
+LEADER_ENABLE = yes

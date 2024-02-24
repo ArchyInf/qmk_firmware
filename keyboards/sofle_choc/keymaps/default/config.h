@@ -27,3 +27,13 @@
 #define RGB_DISABLE_WHEN_USB_SUSPENDED     // turn off effects when suspended
 #define SPLIT_TRANSPORT_MIRROR             // If LED_MATRIX_KEYPRESSES or LED_MATRIX_KEYRELEASES is enabled, you also will want to enable SPLIT_TRANSPORT_MIRROR
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 100  // limits maximum brightness of LEDs (max 255). Higher may cause the controller to crash.
+
+#define ENABLE_RGB_MATRIX_SPLASH
+
+// Only single key -> no timeout
+#define LEADER_NO_TIMEOUT
+#define LEADER_TIMEOUT 1
+#define LEADER_PER_KEY_TIMING
+
+// https://docusaurus.qmk.fm/tap_hold
+#define HOLD_ON_OTHER_KEY_PRESS
