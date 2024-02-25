@@ -78,23 +78,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-                       KC_LCTL, KC_LGUI, KC_LCMD, KC_LSFT, KC_LALT,    _______, KC_SPC,  RAISE,  LOWER, KC_RCTL
+                    KC_LGUI,  MINE_S, KC_LSFT, KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_MINEQWERTY] = LAYOUT(
-    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                          KC_6,     KC_7,     KC_8,    KC_9,    KC_0,  KC_DEL,
-    KC_ESC,   DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Z,    DE_U,    DE_I,    DE_O,    DE_P, DE_ODIA,
-    CTESC,    DE_A,    DE_S,    DE_D,    DE_F,    DE_G,                          DE_H,    DE_J,    DE_K,    DE_L,    _______,  KC_ENT,
-    KC_LCTL,  DE_Y,    DE_X,    DE_C,    DE_V,    DE_B,    KC_MUTE,   KC_MPLY,   DE_N,    DE_M,    KC_COMM, KC_DOT,  KC_UP, QK_LEAD,
-                       KC_LCTL, KC_LGUI, KC_LCMD, KC_LSFT, KC_LALT,    _______, KC_SPC,  RAISE,  LOWER, KC_RCTL
+    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                          KC_6,    KC_7,    KC_8,   KC_9,    KC_0,  KC_DEL,
+    KC_ESC,   DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Z,    DE_U,    DE_I,   DE_O,    DE_P,  DE_ODIA,
+    CTESC,    DE_A,    DE_S,    DE_D,    DE_F,    DE_G,                          DE_H,    DE_J,    DE_K,   DE_L, _______,  KC_ENT,
+    KC_LCTL,  DE_Y,    DE_X,    DE_C,    DE_V,    DE_B,   KC_MUTE,   KC_MPLY,    DE_N,    DE_M, KC_COMM, KC_DOT,   KC_UP,  QK_LEAD,
+                   KC_LGUI,  MINE_S, KC_LSFT, KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_GAME] = LAYOUT(
     DE_TILD, DE_1,    DE_2,    DE_3,    DE_4,    DE_5,                          DE_6,    DE_7,    DE_8,    DE_9,    DE_0,    KC_BSPC,
-    KC_TAB,  DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Z,    DE_U,    DE_I,    DE_O,    DE_P,    KC_DEL,
+    KC_TAB,  DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Z,    DE_U,    DE_I,     DE_O,    DE_P,    KC_DEL,
     KC_ESC,  DE_A,    DE_S,    DE_D,    DE_F,    DE_G,                          DE_H,    DE_J,    DE_K,    DE_L,    _______, KC_ENT,
     KC_LSFT, DE_Y,    DE_X,    DE_C,    DE_V,    DE_B,    KC_MUTE,   KC_MPLY,   DE_N,    DE_M,    KC_COMM, KC_DOT,  KC_UP,   KC_ENT,
-                      KC_LCTL, KC_LGUI, KC_LALT, KC_SPC,  GAME_S,    KC_SPC,  KC_SPC,   RAISE,    LOWER,  KC_RCTL
+                      KC_LCTL, KC_LGUI, KC_LALT, KC_SPC,  GAME_S,    _______, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_LOWER] = LAYOUT(
@@ -132,24 +132,94 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT(
     _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______, 
     _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______,  _______,                   _______,    MINE,    GAME,   MINEQ, _______, _______,
-    _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______,  _______,                   _______,    MINE,    GAME,   MINEQ, _______, RGB_MOD,
+    _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______, _______, _______, RGB_RMOD,
                        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 )
 };
 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) },
-    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT) }
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
+    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) }
 };
 #endif
+
+void rgb_base(uint8_t led_min, uint8_t led_max) {
+  for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+    for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+        uint8_t index = g_led_config.matrix_co[row][col];
+        
+        if (index < led_min || index >= led_max || index == NO_LED)
+          continue;
+
+        unsigned short keycode = keymap_key_to_keycode(0, (keypos_t){col,row});
+        switch (keycode) {
+        case DE_E:
+          rgb_matrix_set_color(index, RGB_TEAL);
+          break;
+        case DE_N:
+          rgb_matrix_set_color(index, RGB_TEAL);
+          break;
+        }
+    }
+  }
+}
+
+HSV tohsv(uint8_t h, uint8_t s, uint8_t v) {
+  HSV hsv;
+  hsv.h = h;
+  hsv.s = s;
+  hsv.v = v;
+  return hsv;
+}
+
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+        
+    uint8_t layer = get_highest_layer(layer_state);
+
+    HSV color = tohsv(HSV_TURQUOISE);
+    switch (layer)
+    {
+    default:
+      color = tohsv(HSV_TURQUOISE);
+      break;
+    case _LOWER: 
+      color = tohsv(HSV_GREEN);
+      break;
+    case _RAISE:
+      color = tohsv(HSV_CORAL);
+      break;
+    case _MINE_S:
+      color = tohsv(HSV_RED);
+      break;
+    }
+    
+    color.v = 20;
+
+    RGB rgb = hsv_to_rgb(color);
+
+    for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+        for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+            uint8_t index = g_led_config.matrix_co[row][col];
+
+            if (index < led_min || index >= led_max || index == NO_LED)
+              continue;
+            
+             rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+        }
+    }
+        
+    rgb_base(led_min, led_max);
+
+    return false;
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
