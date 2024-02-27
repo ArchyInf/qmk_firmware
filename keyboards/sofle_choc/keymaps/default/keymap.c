@@ -56,6 +56,17 @@ enum preonic_keycodes {
 #define UNDO LCTL(KC_Y)
 #define CTESC CTL_T(KC_ESC)
 
+enum {
+    TD_ALT_SALT
+};
+
+void td_dummy(tap_dance_state_t *state, void *user_data) {
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_ALT_SALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
  * QWERTY
@@ -78,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-                    KC_LGUI,  MINE_S, KC_LSFT, KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+                    KC_LGUI,  MINE_S, KC_LSFT, TD(TD_ALT_SALT),    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_MINEQWERTY] = LAYOUT(
@@ -98,7 +109,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_LOWER] = LAYOUT(
-    _______, _______, _______, _______, _______,  _______,                    _______, _______, _______, _______, _______, _______, 
+    _______, _______, _______, _______, _______,  _______,                    _______, _______, _______, _______, _______, _______,
     DE_CIRC, DE_QUES, DE_PERC, DE_PLUS, DE_EXLM,  _______,                    _______, _______, DE_LABK, DE_RABK, _______, _______,
     DE_HASH, DE_SLSH, DE_EQL,  DE_MINS, DE_DQUO,  DE_QUOT,                    _______, DE_AMPR, DE_PIPE,   DE_SS, DE_TILD, _______,
     _______,  DE_BSLS, DE_UNDS, DE_ASTR, DE_GRV,  _______, _______,  _______, _______,   DE_AT,  DE_DLR, DE_EURO, _______, _______,
@@ -106,7 +117,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_RAISE] = LAYOUT(
-    _______, _______, _______, _______, _______,  _______,                   _______, _______, KC_PGUP, _______,  _______,  _______, 
+    _______, _______, _______, _______, _______,  _______,                   _______, _______, KC_PGUP, _______,  _______,  _______,
     _______, DE_LBRC, DE_LCBR, DE_RCBR, DE_RBRC,  _______,                   _______, KC_BSPC,   KC_UP, KC_DEL,   _______,  _______,
     _______,     CPY, DE_LPRN, DE_RPRN, DE_SCLN,  AL_HOME,                   CA_LEFT, KC_LEFT, KC_DOWN, KC_RGHT,  CA_RIGHT, _______,
     _______,     PST,     CUT,    UNDO, CR_NEXT,   CR_ALL, _______, _______, _______, KC_HOME, KC_PGDN, KC_END,   KC_LCTL,  _______,
@@ -114,7 +125,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_MINE_S] = LAYOUT(
-    _______, _______, _______, _______, _______,  _______,                   _______, _______, DE_SLSH, DE_ASTR, _______, _______, 
+    _______, _______, _______, _______, _______,  _______,                   _______, _______, DE_SLSH, DE_ASTR, _______, _______,
     DE_CIRC,   KC_F9,  KC_F10,  KC_F11,  KC_F12,  _______,                   _______,    KC_7,    KC_8,    KC_9, DE_MINS, KC_BSPC,
     _______,   KC_F5,   KC_F6,   KC_F7,   KC_F8,  _______,                   _______,    KC_4,    KC_5,    KC_6, DE_PLUS, _______,
     _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4,  _______, _______, _______, KC_PSCR,    KC_1,    KC_2,    KC_3, _______, _______,
@@ -122,7 +133,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_GAME_S] = LAYOUT(
-    _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______, 
+    _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -130,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_ADJUST] = LAYOUT(
-    _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______, 
+    _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______,                   _______,    MINE,    GAME,   MINEQ, _______, RGB_MOD,
     _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______, _______, _______, RGB_RMOD,
@@ -155,7 +166,7 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
   for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
     for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
         uint8_t index = g_led_config.matrix_co[row][col];
-        
+
         if (index < led_min || index >= led_max || index == NO_LED)
           continue;
 
@@ -165,6 +176,12 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
           rgb_matrix_set_color(index, RGB_TEAL);
           break;
         case DE_N:
+          rgb_matrix_set_color(index, RGB_TEAL);
+          break;
+        case KC_LSFT:
+          rgb_matrix_set_color(index, RGB_TEAL);
+          break;
+        case RAISE:
           rgb_matrix_set_color(index, RGB_TEAL);
           break;
         }
@@ -181,7 +198,7 @@ HSV tohsv(uint8_t h, uint8_t s, uint8_t v) {
 }
 
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-        
+
     uint8_t layer = get_highest_layer(layer_state);
 
     HSV color = tohsv(HSV_TURQUOISE);
@@ -190,7 +207,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     default:
       color = tohsv(HSV_TURQUOISE);
       break;
-    case _LOWER: 
+    case _LOWER:
       color = tohsv(HSV_GREEN);
       break;
     case _RAISE:
@@ -200,7 +217,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       color = tohsv(HSV_RED);
       break;
     }
-    
+
     color.v = 20;
 
     RGB rgb = hsv_to_rgb(color);
@@ -211,18 +228,37 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
             if (index < led_min || index >= led_max || index == NO_LED)
               continue;
-            
+
              rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
         }
     }
-        
+
     rgb_base(led_min, led_max);
 
     return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  tap_dance_action_t *action;
   switch (keycode) {
+        case TD(TD_ALT_SALT):
+          action = &tap_dance_actions[TD_INDEX(keycode)];
+          if (record->event.pressed)
+          {
+            register_code(KC_LALT);
+            if (action->state.count > 0) {
+              register_code(KC_LSFT);
+            }
+          }
+          else
+          {
+            unregister_code(KC_LALT);
+            if (action->state.count > 1) {
+              unregister_code(KC_LSFT);
+            }
+          }
+          return true;
+          break;
         case DE_CIRC:
           if (record->event.pressed) {
             register_code(KC_GRV);
