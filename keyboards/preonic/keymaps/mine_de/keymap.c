@@ -57,6 +57,17 @@ enum preonic_keycodes {
 #define UNDO LCTL(KC_Y)
 #define CTESC CTL_T(KC_ESC)
 
+enum {
+    TD_ALT_SALT
+};
+
+void td_dummy(tap_dance_state_t *state, void *user_data) {
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_ALT_SALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* MINE
@@ -77,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,    DE_W,    DE_B,    DE_D,    DE_G,    DE_ADIA, DE_ODIA,
   CTESC,   DE_C,    DE_R,    DE_I,    DE_E,    DE_O,    DE_M,    DE_N,    DE_T,    DE_S,    DE_H,    KC_ENT,
   KC_LCTL, DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    DE_P,    DE_F,    DE_COMM, DE_DOT,  DE_K,    QK_LEAD,
-  KC_LCTL, KC_LGUI, KC_LGUI, MINE_S,  KC_LSFT, KC_LALT, KC_SPC,  RAISE,   LOWER,   _______, KC_DOWN,   KC_UP
+  KC_LCTL, KC_LGUI, KC_LGUI, MINE_S,  KC_LSFT, TD(TD_ALT_SALT), KC_SPC,  RAISE,   LOWER,   _______, KC_DOWN,   KC_UP
 ),
 
  /* Mine - QWERTY
@@ -98,7 +109,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,    DE_Y,    DE_U,    DE_I,    DE_O,    DE_P,    DE_UDIA,
   CTESC,   DE_A,    DE_S,    DE_D,    DE_F,    DE_G,    DE_H,    DE_J,    DE_K,    DE_L,    DE_ODIA, KC_ENT,
   KC_LCTL, DE_Z,    DE_X,    DE_C,    DE_V,    DE_B,    DE_N,    DE_M,    DE_COMM, DE_DOT,  DE_ADIA, QK_LEAD,
-  KC_LCTL, KC_LGUI, KC_LGUI, MINE_S,  KC_LSFT, KC_LALT, KC_SPC,  RAISE,   LOWER,   _______, KC_DOWN, KC_UP
+  KC_LCTL, KC_LGUI, KC_LGUI, MINE_S,  KC_LSFT, TD(TD_ALT_SALT), KC_SPC,  RAISE,   LOWER,   _______, KC_DOWN, KC_UP
 ),
 
  /* GAME
@@ -233,7 +244,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  tap_dance_action_t *action;
   switch (keycode) {
+        case TD(TD_ALT_SALT):
+          action = &tap_dance_actions[TD_INDEX(keycode)];
+          if (record->event.pressed)
+          {
+            register_code(KC_LALT);
+            if (action->state.count > 0) {
+              register_code(KC_LSFT);
+            }
+          }
+          else
+          {
+            unregister_code(KC_LALT);
+            if (action->state.count > 1) {
+              unregister_code(KC_LSFT);
+            }
+          }
+          return true;
+          break;
         case DE_CIRC:
           if (record->event.pressed) {
             register_code(KC_GRV);
