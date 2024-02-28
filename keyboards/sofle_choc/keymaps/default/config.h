@@ -15,8 +15,7 @@
  */
 #pragma once
 
-#define TAPPING_TERM 400
-//#define TAPPING_TERM_PER_KEY
+#define TAPPING_TERM_PER_KEY
 
 // Enabling this option changes the startup behavior to listen for an
 // active USB communication to delegate which part is master and which
