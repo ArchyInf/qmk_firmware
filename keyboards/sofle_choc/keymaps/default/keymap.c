@@ -194,6 +194,11 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
           rgb_matrix_set_color(index, RGB_TEAL);
           break;
         }
+
+        if (col == 0 && row < 4)
+        {
+            rgb_matrix_set_color(index, RGB_RED);
+        }
     }
   }
 }
