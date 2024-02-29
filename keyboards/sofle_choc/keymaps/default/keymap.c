@@ -16,6 +16,10 @@
 #include QMK_KEYBOARD_H
 #include "keymap_german.h"
 
+#define FPT_BITS 32
+#define FPT_WBITS 14
+#include "fptc.h"
+
 enum preonic_layers {
   _MINE,
   _GAME,
@@ -181,23 +185,20 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
 
         unsigned short keycode = keymap_key_to_keycode(0, (keypos_t){col,row});
         switch (keycode) {
+        case DE_C:
+        case DE_R:
+        case DE_I:
+        case DE_H:
+        case DE_S:
+        case DE_T:
+          rgb_matrix_set_color(index, RGB_GREEN);
+          break;
         case DE_E:
-          rgb_matrix_set_color(index, RGB_TEAL);
-          break;
         case DE_N:
-          rgb_matrix_set_color(index, RGB_TEAL);
-          break;
         case KC_LSFT:
-          rgb_matrix_set_color(index, RGB_TEAL);
-          break;
         case RAISE:
           rgb_matrix_set_color(index, RGB_TEAL);
           break;
-        }
-
-        if (col == 0 && row < 4)
-        {
-            rgb_matrix_set_color(index, RGB_RED);
         }
     }
   }
@@ -211,15 +212,28 @@ HSV tohsv(uint8_t h, uint8_t s, uint8_t v) {
   return hsv;
 }
 
+uint32_t lastTime;
+fpt time;
+
+void keyboard_pre_init_user(void) {
+    lastTime = timer_read32();
+    time = FPT_ZERO;
+}
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    fpt elapsed = i2fpt(timer_elapsed(lastTime));
+    lastTime = timer_read32();
+
+    fpt delta = fpt_div(elapsed, i2fpt(1000));
+    time = fpt_add(time, delta);
 
     uint8_t layer = get_highest_layer(layer_state);
 
-    HSV color = tohsv(HSV_TURQUOISE);
+    HSV color = tohsv(HSV_RED);
     switch (layer)
     {
     default:
-      color = tohsv(HSV_TURQUOISE);
+      color = tohsv(HSV_RED);
       break;
     case _LOWER:
       color = tohsv(HSV_GREEN);
@@ -228,11 +242,16 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       color = tohsv(HSV_CORAL);
       break;
     case _MINE_S:
-      color = tohsv(HSV_RED);
+      color = tohsv(HSV_TURQUOISE);
       break;
     }
 
-    color.v = 20;
+    fpt t = fpt_div(time, i2fpt(3));
+    t = fpt_mul(t, FPT_PI);
+    t = fpt_sin(t);
+    t = fpt_add(t, FPT_ONE);
+    t = fpt_div(t, FPT_TWO);
+    color.v = fpt2i(fpt_mul(t, i2fpt(50)));
 
     RGB rgb = hsv_to_rgb(color);
 
