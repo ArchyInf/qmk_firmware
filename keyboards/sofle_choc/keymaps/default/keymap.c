@@ -38,7 +38,8 @@ enum preonic_keycodes {
   LOWER,
   RAISE,
   MINE_S,
-  GAME_S
+  GAME_S,
+  PLOOPY_SCROLL
 };
 
 #define CT_COMM LCTL(KC_COMM)
@@ -98,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                          KC_6,     KC_7,     KC_8,    KC_9,    KC_0,  KC_DEL,
+    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_BTN1, PLOOPY_SCROLL, KC_BTN2, _______, _______, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
@@ -173,6 +174,24 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
     { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) }
 };
+#else
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (index == 0) {
+        if (clockwise) {
+            tap_code(KC_VOLD);
+        } else {
+            tap_code(KC_VOLU);
+        }
+    }
+    else if (index == 1) {
+        if (clockwise) {
+            tap_code(KC_WH_D);
+        } else {
+            tap_code(KC_WH_U);
+        }
+    }
+    return false;
+}
 #endif
 
 void rgb_base(uint8_t led_min, uint8_t led_max) {
@@ -272,8 +291,18 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  static bool state_PLOOPY_SCROLL = false;
+
   tap_dance_action_t *action;
   switch (keycode) {
+        case PLOOPY_SCROLL:
+          if (record->event.pressed != state_PLOOPY_SCROLL)
+          {
+            SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
+          }
+          state_PLOOPY_SCROLL = record->event.pressed;
+          break;
+
         case TD(TD_ALT_SALT):
           action = &tap_dance_actions[TD_INDEX(keycode)];
           if (record->event.pressed)
