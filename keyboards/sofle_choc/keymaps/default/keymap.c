@@ -14,7 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+
+#include "i2c_master.h"
+
 #include "keymap_german.h"
+#include <transactions.h>
 
 #define FPT_BITS 32
 #define FPT_WBITS 14
@@ -88,6 +92,38 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return 150;
     }
 }
+
+
+
+// split SYNCING
+
+typedef struct _sync_int_t {
+  int data;
+} sync_int_t;
+
+bool leaderActive;
+
+void SetLeaderActive(bool state) {
+  if (leaderActive == state)
+    return;
+
+  leaderActive = state;
+
+  if (is_keyboard_master()) {
+    sync_int_t m2s = {state};
+    transaction_rpc_send(USER_SYNC_LEADER, sizeof(m2s), &m2s);
+  }
+}
+
+void user_sync_leader_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+    const sync_int_t *m2s = (const sync_int_t*)in_data;
+    SetLeaderActive(m2s->data != 0);
+}
+
+void keyboard_post_init_user(void) {
+    transaction_register_rpc(USER_SYNC_LEADER, user_sync_leader_slave_handler);
+}
+
 
 
 // keymaps
@@ -215,20 +251,25 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
 
         unsigned short keycode = keymap_key_to_keycode(0, (keypos_t){col,row});
         switch (keycode) {
-        case DE_C:
-        case DE_R:
-        case DE_I:
-        case DE_H:
-        case DE_S:
-        case DE_T:
-          rgb_matrix_set_color(index, RGB_GREEN);
-          break;
-        case DE_E:
-        case DE_N:
-        case KC_LSFT:
-        case RAISE:
-          rgb_matrix_set_color(index, RGB_TEAL);
-          break;
+          case DE_C:
+          case DE_R:
+          case DE_I:
+          case DE_H:
+          case DE_S:
+          case DE_T:
+            rgb_matrix_set_color(index, RGB_GREEN);
+            break;
+          case DE_E:
+          case DE_N:
+          case KC_LSFT:
+          case RAISE:
+            rgb_matrix_set_color(index, RGB_TEAL);
+            break;
+          case QK_LEAD:
+            if (leaderActive) {
+              rgb_matrix_set_color(index, RGB_BLUE);
+            }
+            break;
         }
     }
   }
@@ -433,10 +474,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 
 void leader_start_user(void) {
-    // Do something when the leader key is pressed
+  SetLeaderActive(true);
 }
 
 void leader_end_user(void) {
+  SetLeaderActive(false);
+
     // navigate to class
     if(leader_sequence_one_key(DE_R)) {
       SEND_STRING(SS_LCTL(SS_TAP(X_N)));
