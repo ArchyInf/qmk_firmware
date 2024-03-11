@@ -61,8 +61,14 @@ enum preonic_keycodes {
 #define UNDO LCTL(KC_Y)
 #define CTESC CTL_T(KC_ESC)
 
+
+
+
+// tap dance
+
 enum {
-    TD_ALT_SALT
+    TD_ALT_SALT,
+    TD_PSCR_MID,
 };
 
 void td_dummy(tap_dance_state_t *state, void *user_data) {
@@ -70,16 +76,21 @@ void td_dummy(tap_dance_state_t *state, void *user_data) {
 
 tap_dance_action_t tap_dance_actions[] = {
     [TD_ALT_SALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+    [TD_PSCR_MID] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
 };
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case TD(TD_ALT_SALT):
+        case TD(TD_PSCR_MID):
             return 400;
         default:
             return 150;
     }
 }
+
+
+// keymaps
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -99,7 +110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_BTN1, PLOOPY_SCROLL, KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
+    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_BTN1, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
@@ -321,6 +332,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return true;
           break;
+
+        case TD(TD_PSCR_MID):
+          action = &tap_dance_actions[TD_INDEX(keycode)];
+          if (record->event.pressed)
+          {
+            if (action->state.count == 0) {
+              SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
+            }
+            if (action->state.count >= 1) {
+              register_code(KC_BTN3);
+            }
+          }
+          else
+          {
+            if (action->state.count <= 1) {
+              SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
+            }
+            if (action->state.count > 1) {
+              unregister_code(KC_BTN3);
+            }
+          }
+          return true;
+          break;
+
         case DE_CIRC:
           if (record->event.pressed) {
             register_code(KC_GRV);
