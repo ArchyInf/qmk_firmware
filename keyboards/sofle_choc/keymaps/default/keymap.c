@@ -570,15 +570,15 @@ void leader_end_user(void) {
       SEND_STRING(SS_LSFT(SS_LCTL(SS_TAP(X_G))));
     }
     // minimize/maximize tool window
-    if(leader_sequence_one_key(DE_3)) {
+    if(leader_sequence_one_key(KC_BTN2)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F3))));
     }
     // analyze stack trace
-    if(leader_sequence_one_key(DE_4)) {
+    if(leader_sequence_one_key(TD(TD_PSCR_MID))) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F4))));
     }
     // refresh Unity
-    if(leader_sequence_one_key(DE_5)) {
+    if(leader_sequence_one_key(KC_BTN1)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F5))));
     }
 
