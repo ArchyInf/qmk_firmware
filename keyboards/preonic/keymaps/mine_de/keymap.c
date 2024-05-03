@@ -35,7 +35,10 @@ enum preonic_keycodes {
   LOWER,
   RAISE,
   MINE_S,
-  GAME_S
+  GAME_S,
+  PLOOPY_SCROLL,
+  PLOOPY_DPI,
+  PLOOPY_RESET
 };
 
 #define CT_COMM LCTL(KC_COMM)
@@ -68,6 +71,15 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_ALT_SALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
 };
 
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case TD(TD_ALT_SALT):
+            return 400;
+        default:
+            return 150;
+    }
+}
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* MINE
@@ -88,7 +100,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,    DE_W,    DE_B,    DE_D,    DE_G,    DE_ADIA, DE_ODIA,
   CTESC,   DE_C,    DE_R,    DE_I,    DE_E,    DE_O,    DE_M,    DE_N,    DE_T,    DE_S,    DE_H,    KC_ENT,
   KC_LCTL, DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    DE_P,    DE_F,    DE_COMM, DE_DOT,  DE_K,    QK_LEAD,
-  KC_LCTL, KC_LGUI, KC_LGUI, MINE_S,  KC_LSFT, TD(TD_ALT_SALT), KC_SPC,  RAISE,   LOWER,   _______, KC_DOWN,   KC_UP
+  KC_BTN1, KC_BTN2, KC_LGUI, MINE_S,  KC_LSFT, TD(TD_ALT_SALT), KC_SPC,  RAISE,   LOWER,   KC_BTN2, PLOOPY_SCROLL, KC_BTN1
 ),
 
  /* Mine - QWERTY
@@ -233,7 +245,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_ADJUST] = LAYOUT_preonic_grid(
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, PLOOPY_SCROLL, PLOOPY_DPI, PLOOPY_RESET, _______,
   _______, QK_BOOT, DB_TOGG, AG_NORM, AG_SWAP, _______, _______, _______, _______, _______, _______, _______,
   _______, _______, _______, _______, _______, _______, _______,    MINE,    GAME,   MINEQ, _______, _______,
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -244,6 +256,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  static bool wasPloopySCROLL = false;
+  static bool wasPloopyDPI = false;
+  static bool wasPloopyRESET = false;
   tap_dance_action_t *action;
   switch (keycode) {
         case TD(TD_ALT_SALT):
@@ -264,6 +279,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return true;
           break;
+
+        case PLOOPY_SCROLL:
+          //if (record->event.pressed && !wasPloopySCROLL)
+          if (record->event.pressed != wasPloopySCROLL)
+          {
+            SEND_STRING(SS_TAP(X_NUM_LOCK)SS_DELAY(10)SS_TAP(X_NUM_LOCK));
+          }
+          wasPloopySCROLL = record->event.pressed;
+          break;
+        case PLOOPY_DPI:
+          if (record->event.pressed && !wasPloopyDPI)
+          {
+            SEND_STRING(SS_TAP(X_CAPS_LOCK)SS_DELAY(20)SS_TAP(X_CAPS_LOCK));
+          }
+          wasPloopyDPI = record->event.pressed;
+          break;
+        case PLOOPY_RESET:
+          if (record->event.pressed && !wasPloopyRESET)
+          {
+            SEND_STRING(SS_TAP(X_NUM_LOCK)SS_TAP(X_CAPS_LOCK)SS_DELAY(10)SS_TAP(X_NUM_LOCK)SS_TAP(X_CAPS_LOCK));
+          }
+          wasPloopyRESET = record->event.pressed;
+          break;
+
         case DE_CIRC:
           if (record->event.pressed) {
             register_code(KC_GRV);
@@ -448,7 +487,7 @@ void leader_end_user(void) {
     }
 
     // task manager
-    if(leader_sequence_one_key(KC_ESC)) {
+    if(leader_sequence_one_key(KC_LCTL)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_ESC))));
     }
     // alt+f4
