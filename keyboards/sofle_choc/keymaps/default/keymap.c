@@ -583,7 +583,7 @@ void leader_end_user(void) {
     }
 
     // task manager
-    if(leader_sequence_one_key(KC_ESC)) {
+    if(leader_sequence_one_key(KC_LCTL)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_ESC))));
     }
     // alt+f4
