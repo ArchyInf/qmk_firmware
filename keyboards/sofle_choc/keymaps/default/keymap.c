@@ -71,7 +71,8 @@ enum preonic_keycodes {
 // tap dance
 
 enum {
-    TD_ALT_SALT,
+    TD_MINE_MINEALT,
+    TD_SHFT_SHFTALT,
     TD_PSCR_MID,
 };
 
@@ -79,13 +80,15 @@ void td_dummy(tap_dance_state_t *state, void *user_data) {
 }
 
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_ALT_SALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+    [TD_MINE_MINEALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+    [TD_SHFT_SHFTALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
     [TD_PSCR_MID] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
 };
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case TD(TD_ALT_SALT):
+        case TD(TD_MINE_MINEALT):
+        case TD(TD_SHFT_SHFTALT):
         case TD(TD_PSCR_MID):
             return 400;
         default:
@@ -150,7 +153,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-                    KC_LGUI,  MINE_S, KC_LSFT, TD(TD_ALT_SALT),    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+               KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_MINEQWERTY] = LAYOUT(
@@ -355,20 +358,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           state_PLOOPY_SCROLL = record->event.pressed;
           break;
 
-        case TD(TD_ALT_SALT):
+        case TD(TD_MINE_MINEALT):
           action = &tap_dance_actions[TD_INDEX(keycode)];
           if (record->event.pressed)
           {
-            register_code(KC_LALT);
+            layer_on(_MINE_S);
             if (action->state.count > 0) {
-              register_code(KC_LSFT);
+              register_code(KC_LALT);
             }
           }
           else
           {
-            unregister_code(KC_LALT);
+            layer_off(_MINE_S);
             if (action->state.count > 1) {
-              unregister_code(KC_LSFT);
+              unregister_code(KC_LALT);
+            }
+          }
+          return true;
+          break;
+
+        case TD(TD_SHFT_SHFTALT):
+          action = &tap_dance_actions[TD_INDEX(keycode)];
+          if (record->event.pressed)
+          {
+            register_code(KC_LSFT);
+            if (action->state.count > 0) {
+              register_code(KC_LALT);
+            }
+          }
+          else
+          {
+            unregister_code(KC_LSFT);
+            if (action->state.count > 1) {
+              unregister_code(KC_LALT);
             }
           }
           return true;
