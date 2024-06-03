@@ -16,8 +16,7 @@
 
 #pragma once
 
-#define TAPPING_TERM 400
-//#define TAPPING_TERM_PER_KEY
+#define TAPPING_TERM_PER_KEY
 
 #ifdef AUDIO_ENABLE
 #    define STARTUP_SONG SONG(PREONIC_SOUND)
