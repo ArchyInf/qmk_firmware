@@ -14,7 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+
+#include "i2c_master.h"
+
 #include "keymap_german.h"
+#include <transactions.h>
 
 #define FPT_BITS 32
 #define FPT_WBITS 14
@@ -38,7 +42,8 @@ enum preonic_keycodes {
   LOWER,
   RAISE,
   MINE_S,
-  GAME_S
+  GAME_S,
+  PLOOPY_SCROLL
 };
 
 #define CT_COMM LCTL(KC_COMM)
@@ -60,25 +65,71 @@ enum preonic_keycodes {
 #define UNDO LCTL(KC_Y)
 #define CTESC CTL_T(KC_ESC)
 
+
+
+
+// tap dance
+
 enum {
-    TD_ALT_SALT
+    TD_MINE_MINEALT,
+    TD_SHFT_SHFTALT,
+    TD_PSCR_MID,
 };
 
 void td_dummy(tap_dance_state_t *state, void *user_data) {
 }
 
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_ALT_SALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+    [TD_MINE_MINEALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+    [TD_SHFT_SHFTALT] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
+    [TD_PSCR_MID] = ACTION_TAP_DANCE_FN_ADVANCED(td_dummy, td_dummy, td_dummy),
 };
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case TD(TD_ALT_SALT):
+        case TD(TD_MINE_MINEALT):
+        case TD(TD_SHFT_SHFTALT):
+        case TD(TD_PSCR_MID):
             return 400;
         default:
             return 150;
     }
 }
+
+
+
+// split SYNCING
+
+typedef struct _sync_int_t {
+  int data;
+} sync_int_t;
+
+bool leaderActive;
+
+void SetLeaderActive(bool state) {
+  if (leaderActive == state)
+    return;
+
+  leaderActive = state;
+
+  if (is_keyboard_master()) {
+    sync_int_t m2s = {state};
+    transaction_rpc_send(USER_SYNC_LEADER, sizeof(m2s), &m2s);
+  }
+}
+
+void user_sync_leader_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+    const sync_int_t *m2s = (const sync_int_t*)in_data;
+    SetLeaderActive(m2s->data != 0);
+}
+
+void keyboard_post_init_user(void) {
+    transaction_register_rpc(USER_SYNC_LEADER, user_sync_leader_slave_handler);
+}
+
+
+
+// keymaps
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -98,11 +149,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                          KC_6,     KC_7,     KC_8,    KC_9,    KC_0,  KC_DEL,
+    QK_LEAD,  KC_1,    KC_2, KC_BTN2,TD(TD_PSCR_MID), KC_BTN1,                KC_BTN1, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-                    KC_LGUI,  MINE_S, KC_LSFT, TD(TD_ALT_SALT),    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+               KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_MINEQWERTY] = LAYOUT(
@@ -164,15 +215,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_WH_U, KC_WH_D) }
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) }
 };
+#else
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (index == 0) {
+        if (clockwise) {
+            tap_code(KC_VOLD);
+        } else {
+            tap_code(KC_VOLU);
+        }
+    }
+    else if (index == 1) {
+        if (clockwise) {
+            tap_code(KC_WH_D);
+        } else {
+            tap_code(KC_WH_U);
+        }
+    }
+    return false;
+}
 #endif
 
 void rgb_base(uint8_t led_min, uint8_t led_max) {
@@ -185,20 +254,25 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
 
         unsigned short keycode = keymap_key_to_keycode(0, (keypos_t){col,row});
         switch (keycode) {
-        case DE_C:
-        case DE_R:
-        case DE_I:
-        case DE_H:
-        case DE_S:
-        case DE_T:
-          rgb_matrix_set_color(index, RGB_GREEN);
-          break;
-        case DE_E:
-        case DE_N:
-        case KC_LSFT:
-        case RAISE:
-          rgb_matrix_set_color(index, RGB_TEAL);
-          break;
+          case DE_C:
+          case DE_R:
+          case DE_I:
+          case DE_H:
+          case DE_S:
+          case DE_T:
+            rgb_matrix_set_color(index, RGB_GREEN);
+            break;
+          case DE_E:
+          case DE_N:
+          case KC_LSFT:
+          case RAISE:
+            rgb_matrix_set_color(index, RGB_TEAL);
+            break;
+          case QK_LEAD:
+            if (leaderActive) {
+              rgb_matrix_set_color(index, RGB_BLUE);
+            }
+            break;
         }
     }
   }
@@ -272,26 +346,79 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  static bool state_PLOOPY_SCROLL = false;
+
   tap_dance_action_t *action;
   switch (keycode) {
-        case TD(TD_ALT_SALT):
+        case PLOOPY_SCROLL:
+          if (record->event.pressed != state_PLOOPY_SCROLL)
+          {
+            SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
+          }
+          state_PLOOPY_SCROLL = record->event.pressed;
+          break;
+
+        case TD(TD_MINE_MINEALT):
           action = &tap_dance_actions[TD_INDEX(keycode)];
           if (record->event.pressed)
           {
-            register_code(KC_LALT);
+            layer_on(_MINE_S);
             if (action->state.count > 0) {
-              register_code(KC_LSFT);
+              register_code(KC_LALT);
             }
           }
           else
           {
-            unregister_code(KC_LALT);
+            layer_off(_MINE_S);
             if (action->state.count > 1) {
-              unregister_code(KC_LSFT);
+              unregister_code(KC_LALT);
             }
           }
           return true;
           break;
+
+        case TD(TD_SHFT_SHFTALT):
+          action = &tap_dance_actions[TD_INDEX(keycode)];
+          if (record->event.pressed)
+          {
+            register_code(KC_LSFT);
+            if (action->state.count > 0) {
+              register_code(KC_LALT);
+            }
+          }
+          else
+          {
+            unregister_code(KC_LSFT);
+            if (action->state.count > 1) {
+              unregister_code(KC_LALT);
+            }
+          }
+          return true;
+          break;
+
+        case TD(TD_PSCR_MID):
+          action = &tap_dance_actions[TD_INDEX(keycode)];
+          if (record->event.pressed)
+          {
+            if (action->state.count == 0) {
+              SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
+            }
+            if (action->state.count >= 1) {
+              register_code(KC_BTN3);
+            }
+          }
+          else
+          {
+            if (action->state.count <= 1) {
+              SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
+            }
+            if (action->state.count > 1) {
+              unregister_code(KC_BTN3);
+            }
+          }
+          return true;
+          break;
+
         case DE_CIRC:
           if (record->event.pressed) {
             register_code(KC_GRV);
@@ -369,10 +496,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 
 void leader_start_user(void) {
-    // Do something when the leader key is pressed
+  SetLeaderActive(true);
 }
 
 void leader_end_user(void) {
+  SetLeaderActive(false);
+
     // navigate to class
     if(leader_sequence_one_key(DE_R)) {
       SEND_STRING(SS_LCTL(SS_TAP(X_N)));
@@ -463,20 +592,20 @@ void leader_end_user(void) {
       SEND_STRING(SS_LSFT(SS_LCTL(SS_TAP(X_G))));
     }
     // minimize/maximize tool window
-    if(leader_sequence_one_key(DE_3)) {
+    if(leader_sequence_one_key(KC_BTN2)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F3))));
     }
     // analyze stack trace
-    if(leader_sequence_one_key(DE_4)) {
+    if(leader_sequence_one_key(TD(TD_PSCR_MID))) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F4))));
     }
     // refresh Unity
-    if(leader_sequence_one_key(DE_5)) {
+    if(leader_sequence_one_key(KC_BTN1)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F5))));
     }
 
     // task manager
-    if(leader_sequence_one_key(KC_ESC)) {
+    if(leader_sequence_one_key(KC_LCTL)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_ESC))));
     }
     // alt+f4
