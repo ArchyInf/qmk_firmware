@@ -65,8 +65,10 @@ enum preonic_keycodes {
 #define UNDO LCTL(KC_Y)
 #define CTESC CTL_T(KC_ESC)
 
-
-
+// IDE
+#define DBGATT LSFT(KC_F9) // attach debugger
+#define ANASTK LCTL(LSFT(KC_F4)) // analyze stack trace
+#define UTYRFS LCTL(LSFT(KC_F5)) // unity refresh
 
 // tap dance
 
@@ -149,19 +151,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_1,    KC_2, KC_BTN2,TD(TD_PSCR_MID), KC_BTN1,                KC_BTN1, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
+    QK_LEAD,  KC_DEL, KC_F5,  DBGATT,  ANASTK,  UTYRFS,                KC_BTN1, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-               KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
+// QWERTY based; P key moved to more accessible place; added umlauts
 [_MINEQWERTY] = LAYOUT(
-    QK_LEAD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                          KC_6,    KC_7,    KC_8,   KC_9,    KC_0,  KC_DEL,
-    KC_ESC,   DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Z,    DE_U,    DE_I,   DE_O,    DE_P,  DE_ODIA,
-    CTESC,    DE_A,    DE_S,    DE_D,    DE_F,    DE_G,                          DE_H,    DE_J,    DE_K,   DE_L, _______,  KC_ENT,
-    KC_LCTL,  DE_Y,    DE_X,    DE_C,    DE_V,    DE_B,   KC_MUTE,   KC_MPLY,    DE_N,    DE_M, KC_COMM, KC_DOT,   KC_UP,  QK_LEAD,
-                   KC_LGUI,  MINE_S, KC_LSFT, KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+    QK_LEAD,  KC_DEL, KC_F5,  DBGATT,  ANASTK,  UTYRFS,                KC_BTN1, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
+    KC_TAB,   DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Y,    DE_U,    DE_I,   DE_O, DE_ODIA,  DE_UDIA,
+    CTESC,    DE_A,    DE_S,    DE_D,    DE_F,    DE_G,                          DE_H,    DE_J,    DE_K,   DE_L,    DE_P,  KC_ENT,
+    KC_LCTL,  DE_Z,    DE_X,    DE_C,    DE_V,    DE_B,   KC_MUTE,   KC_MPLY,    DE_N,    DE_M, KC_COMM, KC_DOT, DE_ADIA,  QK_LEAD,
+            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_GAME] = LAYOUT(
@@ -537,7 +540,7 @@ void leader_end_user(void) {
     }
     // surround {}
     if(leader_sequence_one_key(DE_S)) {
-      SEND_STRING(SS_LCTL(SS_LALT(SS_TAP(X_T)))SS_DELAY(50)SS_TAP(X_7)SS_DELAY(50)SS_TAP(X_ENT));
+      SEND_STRING(SS_LCTL(SS_LALT(SS_TAP(X_T)))SS_DELAY(50)SS_TAP(X_7));
     }
     // find word at carret
     if(leader_sequence_one_key(DE_F)) {
@@ -594,14 +597,6 @@ void leader_end_user(void) {
     // minimize/maximize tool window
     if(leader_sequence_one_key(KC_BTN2)) {
       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F3))));
-    }
-    // analyze stack trace
-    if(leader_sequence_one_key(TD(TD_PSCR_MID))) {
-      SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F4))));
-    }
-    // refresh Unity
-    if(leader_sequence_one_key(KC_BTN1)) {
-      SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_F5))));
     }
 
     // task manager
