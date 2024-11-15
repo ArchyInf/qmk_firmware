@@ -67,11 +67,13 @@ enum preonic_keycodes {
 
 // IDE
 #define DBGATT LSFT(KC_F9) // attach debugger
+#define GODEC LCTL(KC_B) // goto declaration
+#define GOUSG LALT(KC_F7) // find usages
 #define ANASTK LCTL(LSFT(KC_F4)) // analyze stack trace
 #define UTYRFS LCTL(LSFT(KC_F5)) // unity refresh
+#define TGBRK LCTL(KC_F8) // toggle breakpoint
 
 // tap dance
-
 enum {
     TD_MINE_MINEALT,
     TD_SHFT_SHFTALT,
@@ -151,7 +153,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_DEL, KC_F5,  DBGATT,  ANASTK,  UTYRFS,                KC_BTN1, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
+    QK_LEAD,  KC_DEL, GODEC,   GOUSG,  ANASTK,   KC_F5,                UTYRFS, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
@@ -192,7 +194,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_MINE_S] = LAYOUT(
-    _______, _______, _______, _______, _______,  _______,                   _______, _______, DE_SLSH, DE_ASTR, _______, _______,
+    _______,   TGBRK, _______, _______, _______,  _______,                   _______, _______, DE_SLSH, DE_ASTR, _______, _______,
     DE_CIRC,   KC_F9,  KC_F10,  KC_F11,  KC_F12,  _______,                   _______,    KC_7,    KC_8,    KC_9, DE_MINS, KC_BSPC,
     _______,   KC_F5,   KC_F6,   KC_F7,   KC_F8,  _______,                   _______,    KC_4,    KC_5,    KC_6, DE_PLUS, _______,
     _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4,  _______, _______, _______, KC_PSCR,    KC_1,    KC_2,    KC_3, _______, _______,
