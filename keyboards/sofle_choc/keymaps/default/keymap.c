@@ -270,6 +270,7 @@ void rgb_base(uint8_t led_min, uint8_t led_max) {
           case DE_E:
           case DE_N:
           case KC_LSFT:
+          case TD(TD_SHFT_SHFTALT):
           case RAISE:
             rgb_matrix_set_color(index, RGB_TEAL);
             break;
