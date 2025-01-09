@@ -333,6 +333,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     t = fpt_div(t, FPT_TWO);
     color.v = fpt2i(fpt_mul(t, i2fpt(50)));
 
+    // animation still inaccurate
+    color.v = 5;
+
     RGB rgb = hsv_to_rgb(color);
 
     for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
