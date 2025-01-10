@@ -44,8 +44,10 @@ enum preonic_keycodes {
 #define CT_COMM LCTL(KC_COMM)
 
 // nav back/forward (intellij)
-#define CA_LEFT LCTL(LALT(KC_LEFT))
-#define CA_RIGHT LCTL(LALT(KC_RIGHT))
+//#define CA_LEFT LCTL(LALT(KC_LEFT))
+//#define CA_RIGHT LCTL(LALT(KC_RIGHT))
+#define CA_LEFT LCTL(LALT(KC_PGDN))
+#define CA_RIGHT LCTL(LALT(KC_PGUP))
 
 // add caret at find result (intellij)
 #define CR_NEXT LALT(KC_J)
