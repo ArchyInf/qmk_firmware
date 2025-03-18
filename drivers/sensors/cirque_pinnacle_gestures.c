@@ -31,18 +31,32 @@ static cirque_pinnacle_features_t features = {.tap_enable = true, .circular_scro
 #if defined(CIRQUE_PINNACLE_TAP_ENABLE) && CIRQUE_PINNACLE_POSITION_MODE
 static trackpad_tap_context_t tap;
 
+static uint16_t inTapTimer = 0;
+
 static report_mouse_t trackpad_tap(report_mouse_t mouse_report, pinnacle_data_t touchData) {
     if (touchData.touchDown != tap.touchDown) {
         tap.touchDown = touchData.touchDown;
         if (!touchData.zValue) {
             if (timer_elapsed(tap.timer) < CIRQUE_PINNACLE_TAPPING_TERM && tap.timer != 0) {
                 mouse_report.buttons = pointing_device_handle_buttons(mouse_report.buttons, true, POINTING_DEVICE_BUTTON1);
+                inTapTimer = timer_read();
             }
+            else {
+                inTapTimer = 0;
+            }
+        }
+        else if(timer_elapsed(inTapTimer) > CIRQUE_PINNACLE_TAPPING_TERM) {
+            inTapTimer = 0;
         }
         tap.timer = timer_read();
     }
+
     if (timer_elapsed(tap.timer) > (CIRQUE_PINNACLE_TOUCH_DEBOUNCE)) {
         tap.timer = 0;
+    }
+
+    if (inTapTimer > 0 && touchData.zValue) {
+        mouse_report.buttons = pointing_device_handle_buttons(mouse_report.buttons, true, POINTING_DEVICE_BUTTON1);
     }
 
     return mouse_report;
