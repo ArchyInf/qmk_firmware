@@ -157,7 +157,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MOUSE] = LAYOUT(
     _______, _______, _______, _______, _______,  _______,                   KC_BTN2, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
-    _______, _______, _MOUSESCROLL, KC_BTN2, KC_BTN1,  _______,                   _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, KC_BTN2, KC_BTN1,  _______,                   _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______, _______, _______, _______,
                         _______, _______, _______, _______, _______, _MOUSESCROLL, _______, _______, _______, _______
 ),
@@ -183,7 +183,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    _MOUSESCROLL, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 // QWERTY based; P key moved to more accessible place; added umlauts
@@ -192,7 +192,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   DE_Q,    DE_W,    DE_E,    DE_R,    DE_T,                          DE_Y,    DE_U,    DE_I,   DE_O, DE_ODIA,  DE_UDIA,
     CTESC,    DE_A,    DE_S,    DE_D,    DE_F,    DE_G,                          DE_H,    DE_J,    DE_K,   DE_L,    DE_P,  KC_ENT,
     KC_LCTL,  DE_Z,    DE_X,    DE_C,    DE_V,    DE_B,   KC_MUTE,   KC_MPLY,    DE_N,    DE_M, KC_COMM, KC_DOT, DE_ADIA,  QK_LEAD,
-            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    _MOUSESCROLL, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 [_GAME] = LAYOUT(
@@ -411,7 +411,8 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     if (get_highest_layer(state) != _MOUSE) {
-        state_MOUSESCROLL = false;
+        // todo, investigate: pressed event for _MOUSESCROLL not always executed when mouse layer is reactivated
+        //state_MOUSESCROLL = false;
     }
     return state;
 }
