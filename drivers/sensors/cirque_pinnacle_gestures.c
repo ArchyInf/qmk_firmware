@@ -147,7 +147,9 @@ static circular_scroll_t circular_scroll(pinnacle_data_t touchData) {
                  *   Horizontal if started from left half
                  * Flipped for left-handed
                  */
-                scroll.axis = x < 0;
+                //scroll.axis = x < 0;
+                // who needs horizontal???
+                scroll.axis = 0;
             }
         } else if (scroll.state == SCROLL_DETECTING) {
             report.suppress_touch = true;
