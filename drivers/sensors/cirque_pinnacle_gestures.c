@@ -136,7 +136,11 @@ static circular_scroll_t circular_scroll(pinnacle_data_t touchData) {
             report.suppress_touch = false;
             /* Check if touch falls within outer ring */
             mag = sqrt16(x * x + y * y);
-            if (mag * 100 / center >= 100 - scroll.config.outer_ring_pct) {
+            if (mag * 100 / center >= 100 - scroll.config.outer_ring_pct
+                && y < -50 // only on top
+                //&& y > 50 // only on bottom
+                //&& x > 0 // only right side
+            ) {
                 scroll.state = SCROLL_DETECTING;
                 scroll.x     = x;
                 scroll.y     = y;

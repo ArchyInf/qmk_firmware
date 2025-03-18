@@ -19,6 +19,7 @@
 
 #include "keymap_german.h"
 #include <transactions.h>
+#include <drivers/sensors/cirque_pinnacle_gestures.h>
 
 #define FPT_BITS 32
 #define FPT_WBITS 14
@@ -390,6 +391,8 @@ float scroll_accumulated_v = 0;
 void pointing_device_init_user(void) {
     set_auto_mouse_layer(_MOUSE);
     set_auto_mouse_enable(true);
+
+    cirque_pinnacle_configure_circular_scroll(33, 16, 50, 50, false);
 }
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
