@@ -381,8 +381,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     return false;
 }
 
-#define SCROLL_DIVISOR_H 12.0
-#define SCROLL_DIVISOR_V 12.0
+#define SCROLL_DIVISOR_H 40.0
+#define SCROLL_DIVISOR_V 40.0
 bool state_MOUSESCROLL = false;
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
