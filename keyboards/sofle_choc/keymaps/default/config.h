@@ -17,14 +17,7 @@
 
 #define TAPPING_TERM_PER_KEY
 
-// Enabling this option changes the startup behavior to listen for an
-// active USB communication to delegate which part is master and which
-// is slave. With this option enabled and theres’s USB communication,
-// then that half assumes it is the master, otherwise it assumes it
-// is the slave.
-//
-// I've found this helps with some ProMicros where the slave does not boot
-#define SPLIT_USB_DETECT
+#define MASTER_RIGHT
 
 #define RGB_MATRIX_SLEEP     // turn off effects when suspended
 
@@ -41,3 +34,18 @@
 
 // https://docusaurus.qmk.fm/tap_hold
 #define HOLD_ON_OTHER_KEY_PRESS
+
+// touchpad
+//#define POINTING_DEVICE_ROTATION_90
+//#define POINTING_DEVICE_INVERT_X
+//#define POINTING_DEVICE_INVERT_Y
+#define CIRQUE_PINNACLE_DIAMETER_MM 35
+#define CIRQUE_PINNACLE_CURVED_OVERLAY
+
+#define CIRQUE_PINNACLE_ATTENUATION EXTREG__TRACK_ADCCONFIG__ADC_ATTENUATE_3X
+
+#define CIRQUE_PINNACLE_POSITION_MODE CIRQUE_PINNACLE_ABSOLUTE_MODE
+
+#define CIRQUE_PINNACLE_TAP_ENABLE
+#define POINTING_DEVICE_GESTURES_SCROLL_ENABLE
+#define POINTING_DEVICE_GESTURES_CURSOR_GLIDE_ENABLE 

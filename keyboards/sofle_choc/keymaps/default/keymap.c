@@ -155,11 +155,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_DEL, GODEC,   GOUSG,  ANASTK,   KC_F5,                UTYRFS, TD(TD_PSCR_MID), KC_BTN2, KC_WBAK, KC_F5, KC_DEL,
+    QK_LEAD,  KC_DEL, GODEC,   KC_BTN1,  ANASTK,   KC_F5,                KC_BTN2, KC_BTN4, KC_BTN5, KC_WREF, KC_F5, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
+            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    KC_BTN1, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 // QWERTY based; P key moved to more accessible place; added umlauts
