@@ -32,7 +32,8 @@ enum preonic_layers {
   _RAISE,
   _MINE_S,
   _GAME_S,
-  _ADJUST
+  _ADJUST,
+  _MOUSE
 };
 
 enum preonic_keycodes {
@@ -43,7 +44,7 @@ enum preonic_keycodes {
   RAISE,
   MINE_S,
   GAME_S,
-  PLOOPY_SCROLL
+  _MOUSESCROLL
 };
 
 #define CT_COMM LCTL(KC_COMM)
@@ -138,6 +139,29 @@ void keyboard_post_init_user(void) {
 // keymaps
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    /*
+     * QWERTY
+     * ,-----------------------------------------.                    ,-----------------------------------------.
+     * |  `   |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  `   |
+     * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+     * | ESC  |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  | Bspc |
+     * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+     * | CTESC  |   A  |   S  |   D  |   F  |   G  |-------.    ,-------|   H  |   J  |   K  |   L  |   ;  |  '   |
+     * |------+------+------+------+------+------|  Mute |    | Pause |------+------+------+------+------+------|
+     * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   /  |RShift|
+     * `-----------------------------------------/       /     \      \-----------------------------------------'
+     *            | LCTL | LGUI | LCMD | LALT | /Enter  /       \Space \  | RALT | RCMD | RGUI | RCTL |
+     *            |      |      |      |      |/       /         \      \ |      |      |      |      |
+     *            `----------------------------------'           '------''---------------------------'
+     */
+[_MOUSE] = LAYOUT(
+    _______, _______, _______, _______, _______,  _______,                   KC_BTN2, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______,  _______,                   _______, _______, _______, _______, _______, _______,
+    _______, _______, _MOUSESCROLL, KC_BTN2, KC_BTN1,  _______,                   _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______, _______, _______, _______,
+                        _______, _______, _______, _______, _______, _MOUSESCROLL, _______, _______, _______, _______
+),
+
 /*
  * QWERTY
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -155,11 +179,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_MINE] = LAYOUT(
-    QK_LEAD,  KC_DEL, GODEC,   KC_BTN1,  ANASTK,   KC_F5,                KC_BTN2, KC_BTN4, KC_BTN5, KC_WREF, KC_F5, KC_DEL,
+    QK_LEAD,  KC_DEL, GODEC, GOUSG, ANASTK,   KC_F5,                KC_BTN2, KC_BTN4, KC_BTN5, KC_WREF, KC_F5, KC_DEL,
     KC_TAB,   DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,                          DE_W,     DE_B,     DE_D,    DE_G, DE_ADIA, DE_ODIA,
     CTESC,    DE_C,    DE_R,    DE_I,    DE_E,    DE_O,                          DE_M,     DE_N,     DE_T,    DE_S,    DE_H,  KC_ENT,
     KC_LCTL,  DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    KC_MUTE,   KC_MPLY,   DE_P,     DE_F,  DE_COMM,  DE_DOT,    DE_K, QK_LEAD,
-            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    KC_BTN1, KC_SPC,    RAISE,    LOWER,  _______
+            KC_LGUI,  TD(TD_MINE_MINEALT), TD(TD_SHFT_SHFTALT), KC_LALT,    KC_SPC,    QK_LEAD, KC_SPC,    RAISE,    LOWER,  _______
 ),
 
 // QWERTY based; P key moved to more accessible place; added umlauts
@@ -229,7 +253,8 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
     { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
     { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
-    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) }
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
+    { ENCODER_CCW_CW(KC_VOLU, KC_VOLD), ENCODER_CCW_CW(KC_MNXT, KC_MPRV) },
 };
 #else
 bool encoder_update_user(uint8_t index, bool clockwise) {
@@ -356,17 +381,47 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     return false;
 }
 
+#define SCROLL_DIVISOR_H 12.0
+#define SCROLL_DIVISOR_V 12.0
+bool state_MOUSESCROLL = false;
+float scroll_accumulated_h = 0;
+float scroll_accumulated_v = 0;
+
+void pointing_device_init_user(void) {
+    set_auto_mouse_layer(_MOUSE);
+    set_auto_mouse_enable(true);
+}
+
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    if (state_MOUSESCROLL) {
+        scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
+        scroll_accumulated_v += (float)mouse_report.y / SCROLL_DIVISOR_V;
+
+        mouse_report.h = 0; //(int8_t)scroll_accumulated_h;
+        mouse_report.v = (int8_t)scroll_accumulated_v;
+
+        scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
+        scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+
+        mouse_report.x = 0;
+        mouse_report.y = 0;
+    }
+    return mouse_report;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    if (get_highest_layer(state) != _MOUSE) {
+        state_MOUSESCROLL = false;
+    }
+    return state;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  static bool state_PLOOPY_SCROLL = false;
 
   tap_dance_action_t *action;
   switch (keycode) {
-        case PLOOPY_SCROLL:
-          if (record->event.pressed != state_PLOOPY_SCROLL)
-          {
-            SEND_STRING(SS_TAP(X_NUM)SS_DELAY(10)SS_TAP(X_NUM));
-          }
-          state_PLOOPY_SCROLL = record->event.pressed;
+        case _MOUSESCROLL:
+          state_MOUSESCROLL = record->event.pressed;
           break;
 
         case TD(TD_MINE_MINEALT):
