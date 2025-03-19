@@ -328,6 +328,9 @@ void keyboard_pre_init_user(void) {
     time = FPT_ZERO;
 }
 
+static uint16_t moveSum = 0;
+static uint16_t scrollSum = 0;
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     fpt elapsed = i2fpt(timer_elapsed(lastTime));
     lastTime = timer_read32();
@@ -351,6 +354,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       break;
     case _MINE_S:
       color = tohsv(HSV_TURQUOISE);
+      break;
+    case _MOUSE:
+      color = tohsv(HSV_AZURE);
       break;
     }
 
@@ -378,6 +384,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
 
     rgb_base(led_min, led_max);
+
+
+    if (layer == _MOUSE)
+    {
+        rgb_matrix_set_color(55, (moveSum/10)%255, (scrollSum/1)%255, 0);
+    }
 
     return false;
 }
@@ -410,6 +422,10 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
         mouse_report.x = 0;
         mouse_report.y = 0;
     }
+    moveSum += abs(mouse_report.x);
+    moveSum += abs(mouse_report.y);
+    scrollSum += mouse_report.h;
+    scrollSum += mouse_report.v;
     return mouse_report;
 }
 
