@@ -391,6 +391,7 @@ float scroll_accumulated_v = 0;
 void pointing_device_init_user(void) {
     set_auto_mouse_layer(_MOUSE);
     set_auto_mouse_enable(true);
+    set_auto_mouse_timeout(0);
 
     cirque_pinnacle_configure_circular_scroll(33, 16, 50, 50, false);
 }
