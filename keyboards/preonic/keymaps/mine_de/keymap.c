@@ -180,7 +180,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |      |      |      |      |      |      |      |      | Pg Up|      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |   [  |   {  |   }  |   ]  |      |      | Bksp |  Up  |  Del |      |      |
+ * |      |   [  |   {  |   }  |   ]  |      | TAB  | Bksp |  Up  |  Del |  TAB |      |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
  * |      | CPY  |   (  |   )  |   ;  |ALHOME| CALE | Left | Down | Right| CARI |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
@@ -191,7 +191,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_RAISE] = LAYOUT_preonic_grid(
   _______,  _______, _______, _______, _______, _______, _______, _______, KC_PGUP,  _______, _______, _______,
-  _______,  DE_LBRC, DE_LCBR, DE_RCBR, DE_RBRC, _______, _______, KC_BSPC, KC_UP,   KC_DEL,  _______, _______,
+  _______,  DE_LBRC, DE_LCBR, DE_RCBR, DE_RBRC, _______,  KC_TAB, KC_BSPC, KC_UP,   KC_DEL,   KC_TAB, _______,
   _______,      CPY, DE_LPRN, DE_RPRN, DE_SCLN, AL_HOME, CA_LEFT, KC_LEFT, KC_DOWN, KC_RGHT,CA_RIGHT, _______,
   _______,      PST,     CUT,    UNDO, CR_NEXT,  CR_ALL, _______, KC_HOME, KC_PGDN, KC_END,  KC_LCTL, _______,
   _______,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
