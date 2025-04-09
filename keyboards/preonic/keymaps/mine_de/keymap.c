@@ -62,6 +62,14 @@ enum preonic_keycodes {
 #define UNDO LCTL(KC_Y)
 #define CTESC CTL_T(KC_ESC)
 
+// IDE
+#define DBGATT LSFT(KC_F9) // attach debugger
+#define GODEC LCTL(KC_B) // goto declaration
+#define GOUSG LALT(KC_F7) // find usages
+#define ANASTK LCTL(LSFT(KC_F4)) // analyze stack trace
+#define UTYRFS LCTL(LSFT(KC_F5)) // unity refresh
+#define TGBRK LCTL(KC_F8) // toggle breakpoint
+
 enum {
     TD_MINE_MINEALT,
     TD_SHFT_SHFTALT,
@@ -104,7 +112,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_MINE] = LAYOUT_preonic_grid(
-  QK_LEAD, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL,
+  QK_LEAD,  KC_DEL, GODEC,  GOUSG,  ANASTK,   KC_F5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL,
   KC_TAB,  DE_UDIA, DE_L,    DE_U,    DE_A,    DE_J,    DE_W,    DE_B,    DE_D,    DE_G,    DE_ADIA, DE_ODIA,
   CTESC,   DE_C,    DE_R,    DE_I,    DE_E,    DE_O,    DE_M,    DE_N,    DE_T,    DE_S,    DE_H,    KC_ENT,
   KC_LCTL, DE_V,    DE_X,    DE_Z,    DE_Y,    DE_Q,    DE_P,    DE_F,    DE_COMM, DE_DOT,  DE_K,    QK_LEAD,
